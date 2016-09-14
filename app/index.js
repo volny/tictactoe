@@ -1,5 +1,4 @@
 import './style.scss';
-import $ from 'jQuery';
 
 var board = [
   [null, null, null],
@@ -23,32 +22,17 @@ function restartGame() {
   updateMove();
 }
 
-$(document).ready(function() {
-  $("button").click(function() {
-    var cell = $(this).attr("id")
-    // take cell coordiantes out of DOM string
-    var row = parseInt(cell[1])
-    var col = parseInt(cell[2])
-
-    if (!myMove) {
-      board[row][col] = false;
-      myMove = true;
-
-      updateMove();
-      makeMove();
-    }
-  });
-  $("#restart").click(restartGame);
-});
-
 function updateMove() {
   updateButtons();
 
   var winner = getWinner(board);
 
   // WHY WRITE TO DOM ON EVERY MOVE? THIS SHOULD ONLY RUN WHEN getWinner() RETURNS
-  $("#winner").text(winner == 1 ? "AI Won!" : winner == 0 ? "You Won!" : winner == -1 ? "Tie!" : "");
-  $("#move").text(myMove ? "AI's Move" : "Your move");
+  const winString = winner === 1 ? "AI Won!" : winner === 0 ? "You Won!" : winner === -1 ? "Tie!" : "";
+  document.querySelector('#winner').textContent = winString;
+
+  // SHOULD BE DISPLAYED AFTER WE'VE WON
+  document.querySelector('#move').textContent = myMove ? "AI's Move" : "Your move";
 }
 
 function getWinner(board) {
@@ -112,7 +96,9 @@ function updateButtons() {
   // MAP OVER CELLS AGAIN
   for (var i = 0; i < 3; i++) {
     for (var j = 0; j < 3; j++) {
-      $("#c" + i + "" + j).text(board[i][j] == false ? "x" : board[i][j] == true ? "o" : "");
+      // if it's neither false nor true it hasn't been played yet. Strange idea to reassign a value to a different type
+      const tick = board[i][j] == false ? "x" : board[i][j] == true ? "o" : "";
+      document.querySelector("#c" + i + "" + j).textContent = tick;
     }
   }
 }
@@ -126,11 +112,6 @@ function makeMove() {
   myMove = false;
   updateMove();
 }
-
-//function minimaxMove(board) {
-//  numNodes = 0;
-//  return recurseMinimax(board, true)[1];
-//}
 
 // IS ZERO BEFORE EVERY MOVE AND GETS USED ONLY BY recursiveMinimax() - WHY DO WE KEEP TRACK OF THIS GLOBALLY WHEN IT'S RESET?
 var numNodes = 0;
@@ -180,6 +161,28 @@ function recurseMinimax(board, player) {
     return [nextVal, nextBoard];
   }
 }
+
+[].forEach.call(document.querySelectorAll('button'),
+  (e) => e.addEventListener('click', function() {
+
+    var cell = this.getAttribute("id");
+
+    // take cell coordiantes out of DOM string
+    var row = parseInt(cell[1]);
+    var col = parseInt(cell[2]);
+
+    if (!myMove) {
+      board[row][col] = false;
+      myMove = true;
+
+      updateMove();
+      makeMove();
+    }
+
+  }, false)
+)
+
+document.querySelector('#restart').addEventListener('click', restartGame, false);
 
 updateMove();
 
