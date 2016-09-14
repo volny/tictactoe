@@ -1,7 +1,7 @@
 {
-  "name": "es6-webpack-starter",
+  "name": "TicTacToe",
   "version": "1.0.0",
-  "description": "A simple starter template to write vanilla ES6 applications",
+  "description": "TicTacToe AI game",
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,10 +21,7 @@
   ],
   "author": "Felix Volny <felix@volny.co>",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/volny/ES6-webpack-starter/issues"
-  },
-  "homepage": "https://github.com/volny/ES6-webpack-starter#readme",
+  "homepage": "https://github.com/volny/tictactoe#readme",
   "devDependencies": {
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
