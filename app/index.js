@@ -92,15 +92,14 @@ function getWinner(board) {
     return null;
 }
 
+//board.map((row) => row.map((cell) => )
+//});
+
 function updateButtons() {
-  // MAP OVER CELLS AGAIN
-  for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
-      // if it's neither false nor true it hasn't been played yet. Strange idea to reassign a value to a different type
-      const tick = board[i][j] == false ? "x" : board[i][j] == true ? "o" : "";
-      document.querySelector("#c" + i + "" + j).textContent = tick;
-    }
-  }
+  board.map((row, index1) => row.map((cell, index2) => {
+    const tick = cell == false ? "x" : cell == true ? "o" : "";
+    document.querySelector('#c' + index1.toString() + index2.toString()).textContent = tick;
+  }))
 }
 
 function makeMove() {
