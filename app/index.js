@@ -2,8 +2,15 @@ import './style.scss';
 
 const gameboard = document.querySelector('#gameboard').getContext('2d');
 
-gameboard.fillStyle = "green";
-gameboard.fillRect(10, 10, 100, 100);
+gameboard.fillStyle = "#3498db";
+gameboard.fillRect(0, 0, 500, 100);
+
+gameboard.fillStyle = "#7f8c8d";
+gameboard.fillRect(0, 100, 167, 167);
+gameboard.fillStyle = "#bdc3c7";
+gameboard.fillRect(167, 100, 166, 167);
+gameboard.fillStyle = "#7f8c8d";
+gameboard.fillRect(333, 100, 167, 167);
 
 
 var board = [
