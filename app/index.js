@@ -1,5 +1,11 @@
 import './style.scss';
 
+const gameboard = document.querySelector('#gameboard').getContext('2d');
+
+gameboard.fillStyle = "green";
+gameboard.fillRect(10, 10, 100, 100);
+
+
 var board = [
   [null, null, null],
   [null, null, null],
@@ -24,15 +30,9 @@ function restartGame() {
 
 function updateMove() {
   updateButtons();
-
-  var winner = getWinner(board);
-
-  // WHY WRITE TO DOM ON EVERY MOVE? THIS SHOULD ONLY RUN WHEN getWinner() RETURNS
-  const winString = winner === 1 ? "AI Won!" : winner === 0 ? "You Won!" : winner === -1 ? "Tie!" : "";
-  document.querySelector('#winner').textContent = winString;
-
-  // SHOULD BE DISPLAYED AFTER WE'VE WON
-  document.querySelector('#move').textContent = myMove ? "AI's Move" : "Your move";
+  const winner = getWinner(board);
+  const messageString = winner === 1 ? "AI Won!" : winner === 0 ? "You Won!" : winner === -1 ? "Tie!" : myMove ? "AI's Move" : 'Your Move';
+  document.querySelector('#message').textContent = messageString;
 }
 
 function getWinner(board) {
