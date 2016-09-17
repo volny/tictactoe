@@ -44,17 +44,13 @@ function getWinner(board) {
   for (var k = 0; k < vals.length; k++) {
     var value = vals[k];
 
-    // Check rows, columns, and diagonals
-    // DON'T INITIATE AS TRUE, USE TERNARY
     var diagonalComplete1 = true;
     var diagonalComplete2 = true;
 
     for (var i = 0; i < 3; i++) {
-      // 0-0 , 1-1, 2-2 is diagonal
       if (board[i][i] != value) {
         diagonalComplete1 = false;
       }
-      // 2-0, 1-1, 0-2 is diagonal
       if (board[2 - i][i] != value) {
         diagonalComplete2 = false;
       }
@@ -91,9 +87,6 @@ function getWinner(board) {
     }
     return null;
 }
-
-//board.map((row) => row.map((cell) => )
-//});
 
 function updateButtons() {
   board.map((row, index1) => row.map((cell, index2) => {
@@ -157,7 +150,25 @@ function recurseMinimax(board, player) {
         }
       }
     }
-    return [nextVal, nextBoard];
+
+//  ERROR ABOUT MAXIMUM CALL STACK EXCEEDED?
+//  board.map((column) => column.map((cell) => {
+//    if (cell == null) {
+//      cell = player;
+//      var value = recurseMinimax(board, !player)[0];
+//      if (
+//        (player && (nextVal == null || value > nextVal)) ||
+//        (!player && (nextVal == null || value < nextVal))) {
+//        // map over the columns and remove the last row for processing
+//        nextBoard = board.map((column) => column.slice());
+//        nextVal = value;
+//      }
+//      // change the cell back to null?
+//      cell = null;
+//    }
+//  }))
+
+  return [nextVal, nextBoard];
   }
 }
 
