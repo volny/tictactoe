@@ -249,12 +249,19 @@ function assignClick(e) {
     }
   }
 
+  function assignIfAvailable(cell) {
+    // check if cell is unoccupied
+    if (board[cell[0]][cell[1]] === null) {
+      return cell;
+    }
+  }
+
   if (y > headerHeight && y < headerHeight + responsiveThird) {
-    return assignX(x, '0');
+    return assignIfAvailable(assignX(x, '0'))
   } else if (y > headerHeight + responsiveThird && y < headerHeight + 2 * responsiveThird) {
-    return assignX(x, '1');
+    return assignIfAvailable(assignX(x, '1'))
   } else if (y > headerHeight + responsiveThird * 2) {
-    return assignX(x, '2');
+    return assignIfAvailable(assignX(x, '2'))
   }
 }
 
