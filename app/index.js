@@ -69,7 +69,6 @@ function restartGame() {
 function updateMove() {
   updateButtons();
   const winner = getWinner(board);
-  const messageString = winner === 1 ? "AI Won!" : winner === 0 ? "You Won!" : winner === -1 ? "Tie!" : myMove ? "AI's Move" : 'Your Move';
 
   // paint over old message
   gb.fillStyle = '#3498db';
@@ -78,7 +77,21 @@ function updateMove() {
   gb.font = "50px Helvetica";
   gb.textAlign = 'center';
   gb.fillStyle = "Black";
-  gb.fillText(messageString, 250, 65);
+
+  if (winner === 1) {
+    gb.fillText('You lose', 250, 65);
+    canvas.removeEventListener('click', handleClick, false);
+  } else if (winner === 0) {
+    gb.fillText('You Win', 250, 65);
+    canvas.removeEventListener('click', handleClick, false);
+  } else if (winner === -1) {
+    gb.fillText('Tie', 250, 65);
+    canvas.removeEventListener('click', handleClick, false);
+  } else if (myMove) {
+    gb.fillText('My Move', 250, 65);
+  } else {
+    gb.fillText('Your Move', 250, 65);
+  }
 }
 
 function getWinner(board) {
@@ -217,42 +230,54 @@ function recurseMinimax(board, player) {
   }
 }
 
-function assignX(x, row) {
-    if (x < third) {
+function assignClick(e) {
+  const borderWidth = 2;
+  const canvasWidth = canvas.offsetWidth - 2 * borderWidth;
+  const responsiveThird = canvasWidth / 3;
+  const headerHeight = canvasWidth * (header / height);
+
+  const x = e.pageX - canvas.offsetLeft;
+  const y = e.pageY - canvas.offsetTop;
+
+  function assignX(x, row) {
+    if (x < responsiveThird) {
       return row + '0';
-    } else if (x < 2 * third) {
+    } else if (x < 2 * responsiveThird) {
       return row + '1';
     } else {
       return row + '2';
     }
-}
+  }
 
-function assignClick(e) {
-  const x = e.pageX - canvas.offsetLeft;
-  const y = e.pageY - canvas.offsetTop;
-  if (y > header && y < header + third) {
+  if (y > headerHeight && y < headerHeight + responsiveThird) {
     return assignX(x, '0');
-  } else if (y > header + third && y < header + 2 * third) {
+  } else if (y > headerHeight + responsiveThird && y < headerHeight + 2 * responsiveThird) {
     return assignX(x, '1');
-  } else if (y > header + third * 2) {
+  } else if (y > headerHeight + responsiveThird * 2) {
     return assignX(x, '2');
   }
 }
 
-canvas.addEventListener('click', (e) => {
-  const cell = assignClick(e);
-  const row = cell[0];
-  const col = cell[1];
-  if (!myMove) {
-    board[row][col] = false;
-    myMove = true;
+function handleClick(e) {
+  if (assignClick(e)) {
+    const cell = assignClick(e);
+    const row = cell[0];
+    const col = cell[1];
+    if (!myMove) {
+      board[row][col] = false;
+      myMove = true;
 
-    updateMove();
-    makeMove();
+      updateMove();
+      makeMove();
+    }
   }
-}, false);
+}
 
-document.querySelector('#restart').addEventListener('click', restartGame, false);
+canvas.addEventListener('click', handleClick, false);
+document.querySelector('#restart').addEventListener('click',() => {
+  canvas.addEventListener('click', handleClick, false);
+  restartGame();
+}, false);
 
 updateMove();
 
