@@ -1,12 +1,14 @@
 import './style.scss';
 
-const gb = document.querySelector('#gameboard').getContext('2d');
+const canvas = document.querySelector('#gameboard');
+const gb = canvas.getContext('2d');
 
 const third = 167;
-const margin = 20;
+const margin = 30;
 const width = 500;
 const header = 100;
 const height = 600;
+
 
 gb.fillStyle = '#3498db';
 gb.fillRect(0, 0, width, header);
@@ -18,31 +20,28 @@ gb.fillRect(third, header, third, third);
 gb.fillStyle = '#7f8c8d';
 gb.fillRect(third * 2, header, third, third);
 
-gb.lineWidth = 1;
-gb.strokeStyle = 'black';
+gb.lineWidth = 10;
+gb.lineCap = "round";
+gb.strokeStyle = '#2c3e50';
 
 gb.beginPath();
 gb.moveTo(third, header + margin);
 gb.lineTo(third, 600 - margin);
-gb.closePath();
 gb.stroke();
 
 gb.beginPath();
 gb.moveTo(third * 2, header + margin);
 gb.lineTo(third * 2, height - margin);
-gb.closePath();
 gb.stroke();
 
 gb.beginPath();
 gb.moveTo(margin, header + third);
 gb.lineTo(width - margin, header + third);
-gb.closePath();
 gb.stroke();
 
 gb.beginPath();
 gb.moveTo(margin, header + third * 2);
 gb.lineTo(width - margin, header + third * 2);
-gb.closePath();
 gb.stroke();
 
 var board = [
@@ -71,7 +70,15 @@ function updateMove() {
   updateButtons();
   const winner = getWinner(board);
   const messageString = winner === 1 ? "AI Won!" : winner === 0 ? "You Won!" : winner === -1 ? "Tie!" : myMove ? "AI's Move" : 'Your Move';
-  document.querySelector('#message').textContent = messageString;
+
+  // paint over old message
+  gb.fillStyle = '#3498db';
+  gb.fillRect(0, 0, width, header);
+  // new message
+  gb.font = "50px Helvetica";
+  gb.textAlign = 'center';
+  gb.fillStyle = "Black";
+  gb.fillText(messageString, 250, 65);
 }
 
 function getWinner(board) {
@@ -137,7 +144,6 @@ function updateButtons() {
 function makeMove() {
   numNodes = 0;
   board = recurseMinimax(board, true)[1];
-  //board = minimaxMove(board);
 
   console.log(numNodes);
   myMove = false;
@@ -211,25 +217,40 @@ function recurseMinimax(board, player) {
   }
 }
 
-[].forEach.call(document.querySelectorAll('button'),
-  (e) => e.addEventListener('click', function() {
-
-    var cell = this.getAttribute("id");
-
-    // take cell coordiantes out of DOM string
-    var row = parseInt(cell[1]);
-    var col = parseInt(cell[2]);
-
-    if (!myMove) {
-      board[row][col] = false;
-      myMove = true;
-
-      updateMove();
-      makeMove();
+function assignX(x, row) {
+    if (x < third) {
+      return row + '0';
+    } else if (x < 2 * third) {
+      return row + '1';
+    } else {
+      return row + '2';
     }
+}
 
-  }, false)
-)
+function assignClick(e) {
+  const x = e.pageX - canvas.offsetLeft;
+  const y = e.pageY - canvas.offsetTop;
+  if (y > header && y < header + third) {
+    return assignX(x, '0');
+  } else if (y > header + third && y < header + 2 * third) {
+    return assignX(x, '1');
+  } else if (y > header + third * 2) {
+    return assignX(x, '2');
+  }
+}
+
+canvas.addEventListener('click', (e) => {
+  const cell = assignClick(e);
+  const row = cell[0];
+  const col = cell[1];
+  if (!myMove) {
+    board[row][col] = false;
+    myMove = true;
+
+    updateMove();
+    makeMove();
+  }
+}, false);
 
 document.querySelector('#restart').addEventListener('click', restartGame, false);
 
