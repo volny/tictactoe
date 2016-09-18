@@ -8,41 +8,89 @@ const margin = 30;
 const width = 500;
 const header = 100;
 const height = 600;
+const iconCenter = 57;
 
+function drawBoard() {
+  //gb.fillStyle = '#3498db';
+  //gb.fillRect(0, 0, width, header);
 
-gb.fillStyle = '#3498db';
-gb.fillRect(0, 0, width, header);
+  //gb.fillStyle = '#7f8c8d';
+  //gb.fillRect(0, header, third, third);
+  //gb.fillStyle = '#bdc3c7';
+  //gb.fillRect(third, header, third, third);
+  //gb.fillStyle = '#7f8c8d';
+  //gb.fillRect(third * 2, header, third, third);
 
-gb.fillStyle = '#7f8c8d';
-gb.fillRect(0, header, third, third);
-gb.fillStyle = '#bdc3c7';
-gb.fillRect(third, header, third, third);
-gb.fillStyle = '#7f8c8d';
-gb.fillRect(third * 2, header, third, third);
+  gb.lineWidth = 10;
+  gb.lineCap = "round";
+  gb.strokeStyle = '#2c3e50';
 
-gb.lineWidth = 10;
-gb.lineCap = "round";
-gb.strokeStyle = '#2c3e50';
+  gb.beginPath();
+  gb.moveTo(third, header + margin);
+  gb.lineTo(third, 600 - margin);
+  gb.stroke();
 
-gb.beginPath();
-gb.moveTo(third, header + margin);
-gb.lineTo(third, 600 - margin);
-gb.stroke();
+  gb.beginPath();
+  gb.moveTo(third * 2, header + margin);
+  gb.lineTo(third * 2, height - margin);
+  gb.stroke();
 
-gb.beginPath();
-gb.moveTo(third * 2, header + margin);
-gb.lineTo(third * 2, height - margin);
-gb.stroke();
+  gb.beginPath();
+  gb.moveTo(margin, header + third);
+  gb.lineTo(width - margin, header + third);
+  gb.stroke();
 
-gb.beginPath();
-gb.moveTo(margin, header + third);
-gb.lineTo(width - margin, header + third);
-gb.stroke();
+  gb.beginPath();
+  gb.moveTo(margin, header + third * 2);
+  gb.lineTo(width - margin, header + third * 2);
+  gb.stroke();
+}
 
-gb.beginPath();
-gb.moveTo(margin, header + third * 2);
-gb.lineTo(width - margin, header + third * 2);
-gb.stroke();
+function drawO(x,y) {
+  gb.beginPath();
+  gb.lineWidth = 8;
+  gb.strokeStyle = '#2ecc71';
+  gb.arc(x, y, 50, 0, 2 * Math.PI);
+  gb.stroke();
+}
+
+function drawX(x,y) {
+  gb.beginPath();
+  gb.lineWidth = 8;
+  gb.lineCap = "round";
+  gb.strokeStyle = '#c0392b';
+  // 100 / squr(2) / 2 = 35
+  gb.moveTo(x - 50, y - 50);
+  gb.lineTo(x + 50, y + 50);
+  gb.moveTo(x + 50, y - 50);
+  gb.lineTo(x - 50, y  + 50);
+  gb.stroke();
+}
+
+const X0 = header + margin + iconCenter;
+const X1 = header + width / 2;
+const X2 = header + width - margin - iconCenter;
+const Y0 = margin + iconCenter;
+const Y1 = width / 2;
+const Y2 = width - margin - iconCenter;
+// 00
+drawX(Y0, X0);
+// 01
+drawO(Y1, X0);
+// 02
+drawO(Y2, X0);
+// 10
+drawO(Y0, X1);
+// 11
+drawX(Y1, X1);
+// 12
+drawO(Y2, X1);
+// 20
+drawX(Y0, X2);
+// 22
+drawO(Y1, X2);
+// 22
+drawO(Y2, X2);
 
 var board = [
   [null, null, null],
@@ -71,7 +119,7 @@ function updateMove() {
   const winner = getWinner(board);
 
   // paint over old message
-  gb.fillStyle = '#3498db';
+  gb.fillStyle = '#ffffff';
   gb.fillRect(0, 0, width, header);
   // new message
   gb.font = "50px Helvetica";
@@ -286,5 +334,6 @@ document.querySelector('#restart').addEventListener('click',() => {
   restartGame();
 }, false);
 
+drawBoard();
 updateMove();
 
