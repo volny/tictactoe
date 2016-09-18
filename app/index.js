@@ -1,17 +1,49 @@
 import './style.scss';
 
-const gameboard = document.querySelector('#gameboard').getContext('2d');
+const gb = document.querySelector('#gameboard').getContext('2d');
 
-gameboard.fillStyle = "#3498db";
-gameboard.fillRect(0, 0, 500, 100);
+const third = 167;
+const margin = 20;
+const width = 500;
+const header = 100;
+const height = 600;
 
-gameboard.fillStyle = "#7f8c8d";
-gameboard.fillRect(0, 100, 167, 167);
-gameboard.fillStyle = "#bdc3c7";
-gameboard.fillRect(167, 100, 166, 167);
-gameboard.fillStyle = "#7f8c8d";
-gameboard.fillRect(333, 100, 167, 167);
+gb.fillStyle = '#3498db';
+gb.fillRect(0, 0, width, header);
 
+gb.fillStyle = '#7f8c8d';
+gb.fillRect(0, header, third, third);
+gb.fillStyle = '#bdc3c7';
+gb.fillRect(third, header, third, third);
+gb.fillStyle = '#7f8c8d';
+gb.fillRect(third * 2, header, third, third);
+
+gb.lineWidth = 1;
+gb.strokeStyle = 'black';
+
+gb.beginPath();
+gb.moveTo(third, header + margin);
+gb.lineTo(third, 600 - margin);
+gb.closePath();
+gb.stroke();
+
+gb.beginPath();
+gb.moveTo(third * 2, header + margin);
+gb.lineTo(third * 2, height - margin);
+gb.closePath();
+gb.stroke();
+
+gb.beginPath();
+gb.moveTo(margin, header + third);
+gb.lineTo(width - margin, header + third);
+gb.closePath();
+gb.stroke();
+
+gb.beginPath();
+gb.moveTo(margin, header + third * 2);
+gb.lineTo(width - margin, header + third * 2);
+gb.closePath();
+gb.stroke();
 
 var board = [
   [null, null, null],
