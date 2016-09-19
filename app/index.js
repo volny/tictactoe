@@ -3,46 +3,39 @@ import './style.scss';
 const canvas = document.querySelector('#gameboard');
 const gb = canvas.getContext('2d');
 
-const third = 167;
-const margin = 30;
+// CANVAS SIZES
 const width = 500;
-const header = 100;
 const height = 600;
-const iconCenter = 57;
+const headerHeight = 100;
+const margin = 30;
 
 function drawBoard() {
-  //gb.fillStyle = '#3498db';
-  //gb.fillRect(0, 0, width, header);
-
-  //gb.fillStyle = '#7f8c8d';
-  //gb.fillRect(0, header, third, third);
-  //gb.fillStyle = '#bdc3c7';
-  //gb.fillRect(third, header, third, third);
-  //gb.fillStyle = '#7f8c8d';
-  //gb.fillRect(third * 2, header, third, third);
+  // paint over board
+  gb.fillStyle = '#ffffff';
+  gb.fillRect(0, 0, width, headerHeight + width);
 
   gb.lineWidth = 10;
   gb.lineCap = "round";
   gb.strokeStyle = '#2c3e50';
 
   gb.beginPath();
-  gb.moveTo(third, header + margin);
-  gb.lineTo(third, 600 - margin);
+  gb.moveTo(width / 3, headerHeight + margin);
+  gb.lineTo(width / 3, 600 - margin);
   gb.stroke();
 
   gb.beginPath();
-  gb.moveTo(third * 2, header + margin);
-  gb.lineTo(third * 2, height - margin);
+  gb.moveTo(width / 3 * 2, headerHeight + margin);
+  gb.lineTo(width / 3 * 2, height - margin);
   gb.stroke();
 
   gb.beginPath();
-  gb.moveTo(margin, header + third);
-  gb.lineTo(width - margin, header + third);
+  gb.moveTo(margin, headerHeight + width / 3);
+  gb.lineTo(width - margin, headerHeight + width / 3);
   gb.stroke();
 
   gb.beginPath();
-  gb.moveTo(margin, header + third * 2);
-  gb.lineTo(width - margin, header + third * 2);
+  gb.moveTo(margin, headerHeight + width / 3 * 2);
+  gb.lineTo(width - margin, headerHeight + width / 3 * 2);
   gb.stroke();
 }
 
@@ -64,6 +57,8 @@ function restartGame() {
     [null, null, null],
     [null, null, null]
   ];
+
+  drawBoard();
   myMove = false;
   updateMove();
 }
@@ -74,7 +69,8 @@ function updateMove() {
 
   // paint over old message
   gb.fillStyle = '#ffffff';
-  gb.fillRect(0, 0, width, header);
+  gb.fillRect(0, 0, width, headerHeight);
+
   // new message
   gb.font = "50px Helvetica";
   gb.textAlign = 'center';
@@ -100,7 +96,6 @@ function getWinner(board) {
   // all cells occupied
   var allNotNull = true;
 
-  // What? We are doing this once for value=true and once for value=false?
   let vals = [true, false];
   for (var k = 0; k < vals.length; k++) {
     var value = vals[k];
@@ -118,11 +113,9 @@ function getWinner(board) {
       var rowComplete = true;
       var colComplete = true;
       for (var j = 0; j < 3; j++) {
-        // check columns
         if (board[i][j] != value) {
           rowComplete = false;
         }
-        // check rows
         if (board[j][i] != value) {
           colComplete = false;
         }
@@ -131,22 +124,19 @@ function getWinner(board) {
           allNotNull = false;
         }
       }
-      // CAN'T WE JUST STRAIGHT-UP RETURN IN EACH CASE?
-      // why is this in the loop, and the diagonal return isn't?
       if (rowComplete || colComplete) {
         return value ? 1 : 0;
       }
     }
-
     if (diagonalComplete1 || diagonalComplete2) {
         return value ? 1 : 0;
     }
   }
 
-    if (allNotNull) {
-        return -1;
-    }
-    return null;
+  if (allNotNull) {
+      return -1;
+  }
+  return null;
 }
 
 function drawO(x,y) {
@@ -171,12 +161,13 @@ function drawX(x,y) {
 
 
 function updateButtons() {
+  const iconCenter = 57;
   const X0 = margin + iconCenter;
   const X1 = width / 2;
   const X2 = width - margin - iconCenter;
-  const Y0 = header + margin + iconCenter;
-  const Y1 = header + width / 2;
-  const Y2 = header + width - margin - iconCenter;
+  const Y0 = headerHeight + margin + iconCenter;
+  const Y1 = headerHeight + width / 2;
+  const Y2 = headerHeight + width - margin - iconCenter;
   board.map((row, index1) => row.map((cell, index2) => {
     if (cell === false) {
       drawX(eval('X' + index2.toString()), eval('Y' + index1.toString()));
@@ -185,6 +176,8 @@ function updateButtons() {
     }
   }))
 }
+
+var numNodes = 0;
 
 function makeMove() {
   numNodes = 0;
@@ -195,41 +188,31 @@ function makeMove() {
   updateMove();
 }
 
-// IS ZERO BEFORE EVERY MOVE AND GETS USED ONLY BY recursiveMinimax() - WHY DO WE KEEP TRACK OF THIS GLOBALLY WHEN IT'S RESET?
-var numNodes = 0;
-
 function recurseMinimax(board, player) {
   numNodes++;
   var winner = getWinner(board);
   if (winner != null) {
     switch(winner) {
       case 1:
-        // AI wins
         return [1, board]
       case 0:
-        // opponent wins
         return [-1, board]
       case -1:
-        // Tie
         return [0, board];
     }
   } else {
-
-    // NEXT STATES !?!
     var nextVal = null;
     var nextBoard = null;
 
-    // MAP OVER CELLS AGAIN
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 3; j++) {
         if (board[i][j] == null) {
           board[i][j] = player;
-          // RECURSE WITH player=false
+          // toggle player and recurse
           var value = recurseMinimax(board, !player)[0];
           if (
             (player && (nextVal == null || value > nextVal)) ||
             (!player && (nextVal == null || value < nextVal))) {
-            // map over the columns and remove the last row for processing
             nextBoard = board.map(function(arr) {
               return arr.slice();
             });
@@ -266,7 +249,7 @@ function assignClick(e) {
   const borderWidth = 2;
   const canvasWidth = canvas.offsetWidth - 2 * borderWidth;
   const responsiveThird = canvasWidth / 3;
-  const headerHeight = canvasWidth * (header / height);
+  const responsiveHeaderHeight = canvasWidth * (headerHeight / height);
 
   const x = e.pageX - canvas.offsetLeft;
   const y = e.pageY - canvas.offsetTop;
@@ -288,11 +271,11 @@ function assignClick(e) {
     }
   }
 
-  if (y > headerHeight && y < headerHeight + responsiveThird) {
+  if (y > responsiveHeaderHeight && y < responsiveHeaderHeight + responsiveThird) {
     return assignIfAvailable(assignX(x, '0'))
-  } else if (y > headerHeight + responsiveThird && y < headerHeight + 2 * responsiveThird) {
+  } else if (y > responsiveHeaderHeight + responsiveThird && y < responsiveHeaderHeight + 2 * responsiveThird) {
     return assignIfAvailable(assignX(x, '1'))
-  } else if (y > headerHeight + responsiveThird * 2) {
+  } else if (y > responsiveHeaderHeight + responsiveThird * 2) {
     return assignIfAvailable(assignX(x, '2'))
   }
 }
