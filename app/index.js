@@ -7,7 +7,7 @@ const gb = canvas.getContext('2d');
 const width = 500;
 const height = 600;
 const headerHeight = 100;
-const margin = 30;
+const padding = 30;
 
 function drawBoard() {
   // paint over board
@@ -19,23 +19,23 @@ function drawBoard() {
   gb.strokeStyle = '#2c3e50';
 
   gb.beginPath();
-  gb.moveTo(width / 3, headerHeight + margin);
-  gb.lineTo(width / 3, 600 - margin);
+  gb.moveTo(width / 3, headerHeight + padding);
+  gb.lineTo(width / 3, 600 - padding);
   gb.stroke();
 
   gb.beginPath();
-  gb.moveTo(width / 3 * 2, headerHeight + margin);
-  gb.lineTo(width / 3 * 2, height - margin);
+  gb.moveTo(width / 3 * 2, headerHeight + padding);
+  gb.lineTo(width / 3 * 2, height - padding);
   gb.stroke();
 
   gb.beginPath();
-  gb.moveTo(margin, headerHeight + width / 3);
-  gb.lineTo(width - margin, headerHeight + width / 3);
+  gb.moveTo(padding, headerHeight + width / 3);
+  gb.lineTo(width - padding, headerHeight + width / 3);
   gb.stroke();
 
   gb.beginPath();
-  gb.moveTo(margin, headerHeight + width / 3 * 2);
-  gb.lineTo(width - margin, headerHeight + width / 3 * 2);
+  gb.moveTo(padding, headerHeight + width / 3 * 2);
+  gb.lineTo(width - padding, headerHeight + width / 3 * 2);
   gb.stroke();
 }
 
@@ -129,12 +129,12 @@ function getWinner(board) {
       }
     }
     if (diagonalComplete1 || diagonalComplete2) {
-        return value ? 1 : 0;
+      return value ? 1 : 0;
     }
   }
 
   if (allNotNull) {
-      return -1;
+    return -1;
   }
   return null;
 }
@@ -162,12 +162,12 @@ function drawX(x,y) {
 
 function updateButtons() {
   const iconCenter = 57;
-  const X0 = margin + iconCenter;
+  const X0 = padding + iconCenter;
   const X1 = width / 2;
-  const X2 = width - margin - iconCenter;
-  const Y0 = headerHeight + margin + iconCenter;
+  const X2 = width - padding - iconCenter;
+  const Y0 = headerHeight + padding + iconCenter;
   const Y1 = headerHeight + width / 2;
-  const Y2 = headerHeight + width - margin - iconCenter;
+  const Y2 = headerHeight + width - padding - iconCenter;
   board.map((row, index1) => row.map((cell, index2) => {
     if (cell === false) {
       drawX(eval('X' + index2.toString()), eval('Y' + index1.toString()));
@@ -223,31 +223,12 @@ function recurseMinimax(board, player) {
         }
       }
     }
-
-//  ERROR ABOUT MAXIMUM CALL STACK EXCEEDED?
-//  board.map((column) => column.map((cell) => {
-//    if (cell == null) {
-//      cell = player;
-//      var value = recurseMinimax(board, !player)[0];
-//      if (
-//        (player && (nextVal == null || value > nextVal)) ||
-//        (!player && (nextVal == null || value < nextVal))) {
-//        // map over the columns and remove the last row for processing
-//        nextBoard = board.map((column) => column.slice());
-//        nextVal = value;
-//      }
-//      // change the cell back to null?
-//      cell = null;
-//    }
-//  }))
-
   return [nextVal, nextBoard];
   }
 }
 
 function assignClick(e) {
-  const borderWidth = 2;
-  const canvasWidth = canvas.offsetWidth - 2 * borderWidth;
+  const canvasWidth = canvas.offsetWidth;
   const responsiveThird = canvasWidth / 3;
   const responsiveHeaderHeight = canvasWidth * (headerHeight / height);
 
