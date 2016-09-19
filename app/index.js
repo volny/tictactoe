@@ -46,52 +46,6 @@ function drawBoard() {
   gb.stroke();
 }
 
-function drawO(x,y) {
-  gb.beginPath();
-  gb.lineWidth = 8;
-  gb.strokeStyle = '#2ecc71';
-  gb.arc(x, y, 50, 0, 2 * Math.PI);
-  gb.stroke();
-}
-
-function drawX(x,y) {
-  gb.beginPath();
-  gb.lineWidth = 8;
-  gb.lineCap = "round";
-  gb.strokeStyle = '#c0392b';
-  // 100 / squr(2) / 2 = 35
-  gb.moveTo(x - 50, y - 50);
-  gb.lineTo(x + 50, y + 50);
-  gb.moveTo(x + 50, y - 50);
-  gb.lineTo(x - 50, y  + 50);
-  gb.stroke();
-}
-
-const X0 = header + margin + iconCenter;
-const X1 = header + width / 2;
-const X2 = header + width - margin - iconCenter;
-const Y0 = margin + iconCenter;
-const Y1 = width / 2;
-const Y2 = width - margin - iconCenter;
-// 00
-drawX(Y0, X0);
-// 01
-drawO(Y1, X0);
-// 02
-drawO(Y2, X0);
-// 10
-drawO(Y0, X1);
-// 11
-drawX(Y1, X1);
-// 12
-drawO(Y2, X1);
-// 20
-drawX(Y0, X2);
-// 22
-drawO(Y1, X2);
-// 22
-drawO(Y2, X2);
-
 var board = [
   [null, null, null],
   [null, null, null],
@@ -195,10 +149,40 @@ function getWinner(board) {
     return null;
 }
 
+function drawO(x,y) {
+  gb.beginPath();
+  gb.lineWidth = 8;
+  gb.strokeStyle = '#2ecc71';
+  gb.arc(x, y, 50, 0, 2 * Math.PI);
+  gb.stroke();
+}
+
+function drawX(x,y) {
+  gb.beginPath();
+  gb.lineWidth = 8;
+  gb.lineCap = "round";
+  gb.strokeStyle = '#c0392b';
+  gb.moveTo(x - 50, y - 50);
+  gb.lineTo(x + 50, y + 50);
+  gb.moveTo(x + 50, y - 50);
+  gb.lineTo(x - 50, y  + 50);
+  gb.stroke();
+}
+
+
 function updateButtons() {
+  const X0 = margin + iconCenter;
+  const X1 = width / 2;
+  const X2 = width - margin - iconCenter;
+  const Y0 = header + margin + iconCenter;
+  const Y1 = header + width / 2;
+  const Y2 = header + width - margin - iconCenter;
   board.map((row, index1) => row.map((cell, index2) => {
-    const tick = cell == false ? "x" : cell == true ? "o" : "";
-    document.querySelector('#c' + index1.toString() + index2.toString()).textContent = tick;
+    if (cell === false) {
+      drawX(eval('X' + index2.toString()), eval('Y' + index1.toString()));
+    } else if (cell === true) {
+      drawO(eval('X' + index2.toString()), eval('Y' + index1.toString()));
+    }
   }))
 }
 
